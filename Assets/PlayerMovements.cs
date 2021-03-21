@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerMovements : MonoBehaviour
 {
@@ -7,11 +8,12 @@ public class PlayerMovements : MonoBehaviour
     public float forwardForce = 2000f;
     public float sidewaysForce = 1000f;
     public float upwaysForce = 1000f;
-
-
+	public bool canjump = false;
+    bool grounded = false;
+    public Transform groundCheck;
     void FixedUpdate()
     {
-
+	    grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1<< LayerMask.NameToLayer("Ground"));
         if(Input.GetKey(KeyCode.RightArrow))
         {
             rb.AddForce(sidewaysForce* Time.deltaTime, 0 , 0);
@@ -28,11 +30,12 @@ public class PlayerMovements : MonoBehaviour
         {
             rb.AddForce(-sidewaysForce* Time.deltaTime, 0 , 0);
         }
-        if(Time.time > canJump && Input.GetKeyDown(KeyCode.Space))
-        {
+	     void OnCollisionEnter2D(Collision2D collision) 
+		{
+	    if ((grounded)&& Input.GetKey(KeyCode.Space)) {
             rb.AddForce(0,upwaysForce* Time.deltaTime, 0);
-            Debug.Log("Jump");
-            canJump = Time.time + 0.3f;    
+			Debug.Log("Jump");
         }
+		}
     }
 }
